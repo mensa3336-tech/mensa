@@ -5,7 +5,7 @@
 </style></head><body>
 <header><strong>✳ 멘사창의영재센터</strong><small>초1~중3 · 수학, 스도쿠, 체스, 올림피아드, 과학, 국어</small></header>
 <nav aria-label="주요 메뉴"></nav><main id="main"></main><div id="message" role="status" hidden></div>
-<script>
+<script src="/report-tools.js"></script><script>
 'use strict';
 const subjects=['수학','스도쿠','체스','올림피아드','과학','국어'];
 const seed=()=>Array.from({length:30},(_,i)=>({id:i+1,name:`예시학생 ${String(i+1).padStart(2,'0')}`,grade:i%9<6?`초${i%9+1}`:`중${i%9-5}`,subject:subjects[i%6],before:55+i%30,score:Math.min(100,63+i%30),topic:'수와 연산 · 문제 해결',comment:'풀이 과정을 차근차근 설명하는 연습을 하고 있습니다.',goal:'풀이를 검토하고 실수를 줄이기',last:'기본 개념과 계산을 연습했습니다.'}));
@@ -38,7 +38,8 @@ document.getElementById('student')?.addEventListener('change',e=>{selected=Numbe
 document.getElementById('template')?.addEventListener('change',e=>{template=e.target.value;render()});
 document.getElementById('learning')?.addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target),s=student();for(const key of ['before','score'])s[key]=Number(f.get(key));for(const key of ['topic','last','comment','goal'])s[key]=f.get(key);save();render()});
 document.getElementById('note')?.addEventListener('submit',e=>{e.preventDefault();const f=new FormData(e.target),text=String(f.get('text')).trim();if(!text)return;data.notes.push({student:Number(selected),date:today(),kind:f.get('kind'),text});save();render()});
-document.getElementById('add')?.addEventListener('click',()=>edit());document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>edit(Number(b.dataset.edit)));}
+document.getElementById('add')?.addEventListener('click',()=>edit());document.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>edit(Number(b.dataset.edit)));enhanceReports();}
 function edit(id){const old=data.students.find(s=>s.id===id);const s=old||{name:'',grade:'초1',subject:'수학'};document.getElementById('main').innerHTML=`<h1>${old?'학생 수정':'학생 추가'}</h1><section class="card"><form id="studentForm"><label>학생 이름<input name="name" value="${esc(s.name)}" maxlength="40" required></label><label>학년<select name="grade">${['초1','초2','초3','초4','초5','초6','중1','중2','중3'].map(g=>`<option ${s.grade===g?'selected':''}>${g}</option>`).join('')}</select></label><label>과목<select name="subject">${subjects.map(g=>`<option ${s.subject===g?'selected':''}>${g}</option>`).join('')}</select></label><div class="toolbar"><button class="primary">저장</button><button type="button" id="cancel">취소</button></div></form></section>`;document.getElementById('cancel').onclick=render;document.getElementById('studentForm').onsubmit=e=>{e.preventDefault();const f=new FormData(e.target),name=String(f.get('name')).trim();if(!name)return;const values={name,grade:f.get('grade'),subject:f.get('subject')};if(old)Object.assign(old,values);else data.students.push({id:Math.max(0,...data.students.map(s=>s.id))+1,...values,before:0,score:0,topic:'아직 기록이 없습니다.',last:'아직 기록이 없습니다.',comment:'아직 기록이 없습니다.',goal:'학습 목표를 입력하세요.'});save();render()}}
 render();
 </script></body></html>
+
